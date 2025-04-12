@@ -5,15 +5,19 @@ const { generateJWToken } = require("../helpers/jwt");
 
 const createUser = async (req, res = response) => {
   const { email, password } = req.body;
+  
 
   try {
     let existingUser = await UserData.findOne({ email });
+    
     if (existingUser) {
       return res.status(400).json({
         ok: false,
         msg: "El correo electrónico ya está registrado",
       });
     }
+
+
     const userDatos = new UserData(req.body);
     // Encriptar contraseña
     const salt = bcrypt.genSaltSync();
@@ -25,7 +29,7 @@ const createUser = async (req, res = response) => {
 
     res.status(201).json({
       ok: true,
-      msg: "register",
+      msg: "User created successfully",
       uid: userDatos.id,
       name: userDatos.name,
       email: userDatos.email,
@@ -47,15 +51,15 @@ const loginUser = async (req, res = response) => {
     if (!existingUser) {
       return res.status(400).json({
         ok: false,
-        msg: "Email and password doesn't match",
+        msg: "Credentials are not valid",
       });
     }
     // Confirmar los passwords
     const validPassword = bcrypt.compareSync(password, existingUser.password);
     if (!validPassword) {
-      return res.status(400).json({
+      return res.status(401).json({
         ok: false,
-        msg: "Email and password doesn't match",
+        msg: "Credentials are not valid",
       });
     }
 
@@ -63,14 +67,14 @@ const loginUser = async (req, res = response) => {
 
     res.status(201).json({
       ok: true,
-      msg: "login",
+      msg: "Login successfully",
       uid: existingUser.id,
       name: existingUser.name,
       email: existingUser.email,
-      token,
+      token: token,
     });
   } catch (error) {
-    console.log(error);
+    
     res.status(500).json({
       ok: false,
       msg: "Por favor hable con el administrador",
@@ -85,7 +89,9 @@ const renewToken = async (req, res = response) => {
 
   res.json({
     ok: true,
-    msg: "renew",
+    uid,
+    name,
+    msg: "Token re-new successfully",
     token,
   });
 };

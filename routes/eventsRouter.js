@@ -17,7 +17,11 @@ router.post(
   "/",
   [
     check("title", "Title is required").not().isEmpty(),
+    validateField,
+    check("note", "Notes are required").not().isEmpty(),
+    validateField,
     check("start", "Start date is required").custom(isDate),
+    validateField,
     check("end", "End date is required").custom(isDate),
     validateField,
   ],

@@ -3,13 +3,17 @@ const { validationResult } = require("express-validator");
 
 const validateField = (req, res = response, next) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({
       ok: false,
-      errors: errors.mapped(),
+      errors: errors,
+
+      ErrMsg: "Validation error",
     });
   }
 
+  // Si no hay errores, continuamos con la siguiente función middleware
   next();
 };
 

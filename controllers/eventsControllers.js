@@ -7,12 +7,12 @@ const createEvent = async (req, res = response) => {
   event.user = req.uid;
 
   try {
-    const savedEvent = await event.save();
+    const Event = await event.save();
 
     res.status(200).send({
       ok: true,
       msg: "Event created successfully",
-      savedEvent,
+      Event,
     });
   } catch (error) {
     console.log(error);
